@@ -1,5 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+
+
+char *fs_name;
+
 
 int main(int argc, char *argv[])
 {
@@ -12,8 +17,6 @@ int main(int argc, char *argv[])
 /*	put ':' in the starting of the
 	string so that program can
 	distinguish between '?' and ':'
-
-	while((opt = getopt(argc, argv, ":if:lrx")) != -1)
 */
 	while((opt = getopt(argc, argv, ":f:cp:g:se:d")) != -1)
 	{
@@ -28,11 +31,11 @@ int main(int argc, char *argv[])
                 /* create */
 				break;
 			case 'p':
-				printf("option: %c : put file %s into filesystem\n", opt, optarg);
+				printf("option: %c : put file \'%s\' into filesystem\n", opt, optarg);
                 /* put */
 				break;
 			case 'g':
-				printf("option: %c : get file %s from filesystem\n", opt, optarg);
+				printf("option: %c : get file \'%s\' from filesystem\n", opt, optarg);
                 /* get */
 				break;
 			case 's':
@@ -40,7 +43,7 @@ int main(int argc, char *argv[])
                 /* display */
 				break;
 			case 'e':
-				printf("option: %c : erase file %s from filesystem\n", opt, optarg);
+				printf("option: %c : erase file \'%s\' from filesystem\n", opt, optarg);
                 /* erase */
 				break;
 			case 'd':
@@ -63,5 +66,9 @@ int main(int argc, char *argv[])
 		printf("extra arguments: %s\n", argv[optind]);
 	}
 	
+    if (fs_name) {
+        free(fs_name);
+    }
+    
 	return 0;
 }
