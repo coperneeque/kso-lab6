@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-char *fs_name(char *dst, char *src)
+char *fsname(char *dst, char *src)
 {
     if (strlen(src) > FS_NAME_CAP) {
         return 0;

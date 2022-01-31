@@ -5,6 +5,6 @@
 #define FS_NAME_CAP 100
 
 
-char *fs_name(char *dst, char *src);
+char *fsname(char *dst, char *src);
 
 #endif
