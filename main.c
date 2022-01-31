@@ -1,6 +1,3 @@
-// Program to illustrate the getopt()
-// function in C
-
 #include <stdio.h>
 #include <unistd.h>
 
@@ -12,9 +9,10 @@ int main(int argc, char *argv[])
 
 	int opt;
 	
-	// put ':' in the starting of the
-	// string so that program can
-	//distinguish between '?' and ':'
+/*	put ':' in the starting of the
+	string so that program can
+	distinguish between '?' and ':'
+*/
 	while((opt = getopt(argc, argv, ":if:lrx")) != -1)
 	{
 		switch(opt)
@@ -36,8 +34,9 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	// optind is for the extra arguments
-	// which are not parsed
+/*	optind is for the extra arguments
+	which are not parsed
+*/
 	for(; optind < argc; optind++){	
 		printf("extra arguments: %s\n", argv[optind]);
 	}
