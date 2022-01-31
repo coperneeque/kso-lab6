@@ -5,6 +5,49 @@
 #define FS_NAME_CAP 100
 
 
+typedef struct superblock
+{
+    int num_inodes;
+    int num_blocks;
+    int size_blocks;
+} superblock_t;
+
+typedef struct inode
+{
+    int size;
+    char name[8];
+    int first_block;
+    int nextblock_num;
+} inode_t;
+
+typedef struct disk_block
+{
+    int next_block_num;
+    char data[512];
+} diskblock_t;
+
+/*
+ * Copy filesystem file name from command line argument to buffer.
+ * malloc() the space required for dst - needs freeing later.
+ * Returns poiter to dst.
+ */
 char *fsname(char *dst, char *src);
+
+/*
+ * Initialize new filesystem
+ */
+void create_fs();
+
+/*
+ * Load a filesystem
+ */
+void mount_fs();
+
+/*
+ * Write the filesystem
+ */
+void sync_fs();
+
+void print_fs();
 
 #endif
