@@ -2,6 +2,7 @@
 #define FILESYS_H
 
 
+#define BLOCK_SIZE 512
 #define FS_NAME_CAP 100
 
 
@@ -23,7 +24,7 @@ typedef struct inode
 typedef struct disk_block
 {
     int next_block_num;
-    char data[512];
+    char data[BLOCK_SIZE];
 } diskblock_t;
 
 /*
@@ -49,5 +50,11 @@ void mount_fs();
 void sync_fs();
 
 void print_fs();
+
+void destroy_fs();
+
+int allocate_file(char name[8]);
+void set_filesize(int fnum, int size);
+void write_byte(int fnum, int pos, char *data);
 
 #endif

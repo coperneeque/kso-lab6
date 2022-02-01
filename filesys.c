@@ -35,7 +35,7 @@ void create_fs()
     {
         inodes[i].size = -1;
         inodes[i].first_block = -1;
-        strcpy(inodes[i].name, "emptyfi");
+        strcpy(inodes[i].name, "no_name");
     }
     
     dbs = malloc(sizeof(diskblock_t) * sb.num_blocks);
@@ -89,4 +89,123 @@ void print_fs()
         printf("block num: %d, next block: %d\n", i, dbs[i].next_block_num);
     }    
 
+}
+
+void destroy_fs()
+{
+    if (dbs)    free(dbs);
+    if (inodes) free(inodes);
+}
+
+int allocate_file(char name[8])
+{
+    int in = find_inode();
+    int blk = find_block();
+
+    inodes[in].first_block = blk;
+    dbs[blk].next_block_num = -2;
+
+    strcpy(inodes[in].name, name);
+}
+
+int find_inode()
+{
+    int i;
+    for (i = 0; i < sb.num_inodes; i++)
+    {
+        if (inodes[i].first_block == -1)
+        {
+            return i;
+        }
+        
+    }
+    return -1;
+}
+
+int find_block()
+{
+    int i;
+    for (i = 0; i < sb.num_blocks; i++)
+    {
+        if (dbs[i].next_block_num == -1)
+        {
+            return i;
+        }
+        
+    }
+    return -1;
+}
+
+void set_filesize(int fnum, int size)
+{
+    int num;
+    int bn;
+    int next_num;
+    int empty;
+
+    num = size / BLOCK_SIZE;
+    if (size % BLOCK_SIZE > 0)
+    {
+        ++num;
+    }
+    
+    bn = inodes[fnum].first_block;
+    --num;
+
+    /* increase file if needed */
+    while (num > 0)
+    {
+        /* next block number */
+        next_num = dbs[bn].next_block_num;
+        if (next_num == -2)
+        {
+            empty = find_block();
+            dbs[bn].next_block_num = empty;
+            dbs[empty].next_block_num = -2;
+        }
+        bn = dbs[bn].next_block_num;
+        --num;
+    }
+    shorten_file(bn);
+    dbs[bn].next_block_num = -2;
+}
+
+void shorten_file(int blk_num)
+{
+    int n = dbs[blk_num].next_block_num;
+    if (n >= 0)
+    {
+        shorten_file(n);
+    }
+    dbs[blk_num].next_block_num = -1;
+}
+
+int get_block(int fnum, int offset)
+{
+    int shift;
+    int blk_num;
+
+    while (shift > 0)
+    {
+// FIXME:
+        blk_num = dbs[blk_num].next_block_num;
+        --shift;
+    }
+    
+
+    return blk_num;
+}
+
+void write_byte(int fnum, int pos, char *data)
+{
+    int rel_blk;
+    int offset;
+    int blk_num;
+
+    /* which block */
+    rel_blk = pos / BLOCK_SIZE;
+    blk_num = get_block(fnum, rel_blk);
+    offset = pos % BLOCK_SIZE;
+
+    dbs[blk_num].data[offset] = (*data);
 }
